@@ -1,0 +1,125 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#111827;
+    color:white;
+    min-height:100vh;
+}
+
+header{
+    text-align:center;
+    padding:20px;
+}
+
+header h1{
+    color:#ff9900;
+}
+
+.dashboard{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    flex-wrap:wrap;
+    margin:20px;
+}
+
+.stat-card{
+    background:#1f2937;
+    padding:20px;
+    width:220px;
+    text-align:center;
+    border-radius:10px;
+}
+
+.stat-card h2{
+    color:#ff9900;
+}
+
+.form-container{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+    margin:20px;
+}
+
+.form-container input{
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    width:200px;
+}
+
+.form-container button{
+    background:#ff9900;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.search-box{
+    display:flex;
+    justify-content:center;
+    margin:20px;
+}
+
+.search-box input{
+    width:300px;
+    padding:10px;
+    border:none;
+    border-radius:8px;
+}
+
+.employee-container{
+    display:grid;
+    grid-template-columns:
+    repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+    padding:20px;
+}
+
+.card{
+    background:#1f2937;
+    padding:20px;
+    border-radius:10px;
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+}
+
+.avatar{
+    font-size:50px;
+    text-align:center;
+    margin-bottom:15px;
+}
+
+.card h3{
+    color:#ff9900;
+    margin-bottom:10px;
+}
+
+.delete-btn{
+    margin-top:10px;
+    width:100%;
+    background:#ff9900;
+    color:white;
+    border:none;
+    padding:10px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+footer{
+    text-align:center;
+    padding:20px;
+    color:#9ca3af;
+}
