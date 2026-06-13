@@ -1,175 +1,189 @@
-const defaultEmployees = [
-{
-id:"EMP001",
-name:"John",
-department:"HR",
-email:"[john@gmail.com](mailto:john@gmail.com)"
-},
-{
-id:"EMP002",
-name:"Alice",
-department:"IT",
-email:"[alice@gmail.com](mailto:alice@gmail.com)"
-},
-{
-id:"EMP003",
-name:"David",
-department:"Finance",
-email:"[david@gmail.com](mailto:david@gmail.com)"
-},
-{
-id:"EMP004",
-name:"Sophia",
-department:"Marketing",
-email:"[sophia@gmail.com](mailto:sophia@gmail.com)"
-}
-];
-
 let employees =
-JSON.parse(localStorage.getItem("employees"));
+JSON.parse(localStorage.getItem("employees")) || [];
 
-if(!employees || employees.length === 0){
-employees = defaultEmployees;
-localStorage.setItem(
-"employees",
-JSON.stringify(employees)
-);
-}
+let editId = null;
 
 const container =
 document.getElementById("employeeContainer");
 
 function updateDashboard(){
 
-document.getElementById(
-"totalEmployees"
-).innerText = employees.length;
+    document.getElementById(
+    "totalEmployees"
+    ).innerText = employees.length;
 
-document.getElementById(
-"activeEmployees"
-).innerText = employees.length;
+    document.getElementById(
+    "activeEmployees"
+    ).innerText = employees.length;
 
-const departments =
-[...new Set(
-employees.map(
-emp => emp.department
-)
-)];
+    const departments =
+    [...new Set(
+    employees.map(
+    emp => emp.department
+    ))];
 
-document.getElementById(
-"totalDepartments"
-).innerText =
-departments.length;
-
+    document.getElementById(
+    "totalDepartments"
+    ).innerText =
+    departments.length;
 }
 
 function displayEmployees(data){
 
-container.innerHTML = "";
+    container.innerHTML = "";
 
-data.forEach(emp => {
+    if(data.length === 0){
 
-container.innerHTML += `
+        container.innerHTML =
+        "<h2>No Employees Found</h2>";
 
-<div class="card">
+        updateDashboard();
+        return;
+    }
 
-<div class="avatar">👤</div>
+    data.forEach(emp => {
 
-<h3>${emp.name}</h3>
+        container.innerHTML += `
 
-<p><strong>ID:</strong> ${emp.id}</p>
+        <div class="card">
 
-<p><strong>Department:</strong> ${emp.department}</p>
+            <div class="avatar">👤</div>
 
-<p><strong>Email:</strong> ${emp.email}</p>
+            <h3>${emp.name}</h3>
 
-<button
-class="delete-btn"
-onclick="deleteEmployee('${emp.id}')">
-Delete </button>
+            <p><strong>ID:</strong> ${emp.id}</p>
 
-</div>
+            <p><strong>Department:</strong> ${emp.department}</p>
 
-`;
+            <p><strong>Email:</strong> ${emp.email}</p>
 
-});
+            <button
+            class="edit-btn"
+            onclick="editEmployee('${emp.id}')">
+            Edit
+            </button>
 
+            <button
+            class="delete-btn"
+            onclick="deleteEmployee('${emp.id}')">
+            Delete
+            </button>
+
+        </div>
+
+        `;
+    });
+
+    updateDashboard();
 }
 
 function addEmployee(){
 
-const name =
-document.getElementById("empName").value;
+    const name =
+    document.getElementById("empName").value;
 
-const department =
-document.getElementById("empDept").value;
+    const department =
+    document.getElementById("empDept").value;
 
-const email =
-document.getElementById("empEmail").value;
+    const email =
+    document.getElementById("empEmail").value;
 
-if(
-name === "" ||
-department === "" ||
-email === ""
-){
-alert("Please fill all fields");
-return;
+    if(
+    name === "" ||
+    department === "" ||
+    email === ""
+    ){
+        alert("Please fill all fields");
+        return;
+    }
+
+    if(editId){
+
+        employees =
+        employees.map(emp => {
+
+            if(emp.id === editId){
+
+                return {
+                    ...emp,
+                    name,
+                    department,
+                    email
+                };
+            }
+
+            return emp;
+        });
+
+        editId = null;
+
+    }else{
+
+        const newEmployee = {
+
+            id:
+            "EMP" + Date.now(),
+
+            name,
+
+            department,
+
+            email
+        };
+
+        employees.push(newEmployee);
+    }
+
+    localStorage.setItem(
+    "employees",
+    JSON.stringify(employees)
+    );
+
+    displayEmployees(employees);
+
+    document.getElementById("empName").value = "";
+    document.getElementById("empDept").value = "";
+    document.getElementById("empEmail").value = "";
 }
 
-const newEmployee = {
+function editEmployee(id){
 
-id:
-"EMP" +
-String(employees.length + 1)
-.padStart(3,"0"),
+    const employee =
+    employees.find(
+    emp => emp.id === id
+    );
 
-name:name,
+    document.getElementById(
+    "empName"
+    ).value =
+    employee.name;
 
-department:department,
+    document.getElementById(
+    "empDept"
+    ).value =
+    employee.department;
 
-email:email
+    document.getElementById(
+    "empEmail"
+    ).value =
+    employee.email;
 
-};
-
-employees.push(newEmployee);
-
-localStorage.setItem(
-"employees",
-JSON.stringify(employees)
-);
-
-displayEmployees(employees);
-updateDashboard();
-
-document.getElementById(
-"empName"
-).value="";
-
-document.getElementById(
-"empDept"
-).value="";
-
-document.getElementById(
-"empEmail"
-).value="";
-
+    editId = id;
 }
 
 function deleteEmployee(id){
 
-employees =
-employees.filter(
-emp => emp.id !== id
-);
+    employees =
+    employees.filter(
+    emp => emp.id !== id
+    );
 
-localStorage.setItem(
-"employees",
-JSON.stringify(employees)
-);
+    localStorage.setItem(
+    "employees",
+    JSON.stringify(employees)
+    );
 
-displayEmployees(employees);
-updateDashboard();
-
+    displayEmployees(employees);
 }
 
 document.getElementById(
@@ -178,21 +192,17 @@ document.getElementById(
 "keyup",
 function(){
 
-const value =
-this.value.toLowerCase();
+    const value =
+    this.value.toLowerCase();
 
-const filtered =
-employees.filter(emp =>
+    const filtered =
+    employees.filter(emp =>
+    emp.name
+    .toLowerCase()
+    .includes(value)
+    );
 
-emp.name
-.toLowerCase()
-.includes(value)
-
-);
-
-displayEmployees(filtered);
-
+    displayEmployees(filtered);
 });
 
 displayEmployees(employees);
-updateDashboard();
